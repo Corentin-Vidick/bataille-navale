@@ -27,6 +27,9 @@ function createMap() {
 function buildPhase() {
     document.getElementById("menu").innerHTML = `<button id="boat1">Boat 0</button>
     <button id="boat2">Boat 1</button>`;
+    for (let x = 50 ; x <=99 ; x++) {
+        document.getElementById(x).className="cell fog";
+    }
     let buttons = document.getElementsByTagName("button");
     for (let button of buttons) {
         button.addEventListener("click", function(){
@@ -44,20 +47,16 @@ function placeBoat() {
     document.getElementById("menu").innerHTML = `<h2>Place boat 1</h2>`
     let cells = document.getElementsByClassName("cell");
     for (let cell of cells) {
-        cell.addEventListener("click", checkPlacement)}
+        cell.addEventListener("click", function(){this.className = "cell boat";})
+    }
+    checkPlacement()
 }
 
-function checkPlacement () {
-    console.log("checkPlacement");
-    let cell = parseInt(this.id);
+function checkPlacement() {
 
-//      WORK IN PROGRESS FROM HERE     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!    
-    if (cell === 9 || cell === 19 || cell === 29 || cell === 9 || cell === 9 || cell === 9 || cell === 9 || cell === 9 || cell === 9 || )
-    let length = cell + 3;
-    alert(`You clicked cell ${cell}`);
-    for (let x = cell; x <= length ; x++) {
-        document.getElementById(x).className = "cell boat";
+    for (x = 0 ; x < 100 ; x ++) {
+        if (document.getElementById(x) === "boat") {
+            console.log("checked first boat appearance");
+        }
     }
-    let boat1 = 1;
-    return boat1;
 }
