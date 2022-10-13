@@ -1,0 +1,37 @@
+* {
+    margin: 0;
+    padding: 0;
+    border: none;
+    box-sizing: border-box;
+}
+
+#menu {
+    width: 100%;
+    background-color: lightcoral;
+    height: 75px;
+}
+
+button {
+    height: 50px;
+    width: 50px;
+    background-color: red;
+    font-size: 20px;
+}
+
+#game-container {
+    display: grid;
+    background-color: lightblue;
+    padding: 20px;
+    gap: 10px;
+    grid-template-columns: repeat(10, 8vw);
+}
+
+.cell {
+    background-color: blue;
+    width: 8vw;
+    height: 8vh;
+}
+
+.boat {
+    background-color: black;
+}
