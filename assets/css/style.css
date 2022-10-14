@@ -22,7 +22,7 @@ button {
     display: grid;
     background-color: lightblue;
     padding: 20px;
-    gap: 10px;
+    gap: 5px;
     grid-template-columns: repeat(10, 8vw);
 }
 
@@ -38,4 +38,12 @@ button {
 
 .fog {
     background-color: darkblue;
+}
+
+.highlight-cell {
+    box-shadow: 5px 5px 5px #00aaff;
+}
+
+.highlight-fog {
+    background-color: #000045;
 }
