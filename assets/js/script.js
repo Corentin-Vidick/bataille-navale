@@ -65,6 +65,7 @@ function checkPlacement() {
     alert("Boat placed");
     let boatCounter = 0;
     let lastEncounter = [];
+    let incorrect = 0;
     for (let x = 0 ; x < 50 ; x ++) {
         if (document.getElementById(x).className === "cell boat") {
             lastEncounter[boatCounter] = x;
@@ -73,19 +74,22 @@ function checkPlacement() {
     }
     if (boatCounter != 4){
         alert("Wrong length of boat! Please try again and select four cells");
-        placeBoat();
+        placeBoat();                        // doesn't work as intended
     } else for (let x=0 ; x<(boatCounter-1) ; x++) {
-        if ((lastEncounter[x]%10) === (lastEncounter[x+1]%10) 
-            && (lastEncounter[x+1]%10) === (lastEncounter[x+2]%10)
-            && (lastEncounter[x+2]%10) === (lastEncounter[x+3]%10)) {
-                alert("correct boat horizontal");
-        } else if ( document.getElementById(lastEncounter[x]).className === "cell boat"
-                    && document.getElementById(lastEncounter[x]).className === "cell boat"
-                    && document.getElementById(lastEncounter[x]).className === "cell boat") {        //check if in-line vertical
-            alert("correct boat vertical"); 
-        } else {
-            alert("incorrect placement");
-        }
+        if ((lastEncounter[x]+1) !== (lastEncounter[x+1]) 
+            && parseInt(lastEncounter[x]/10) !== parseInt(lastEncounter[x+1]/10)) {
+                //alert("correct boat horizontal");
+                incorrect = 1;
+        } else if ((lastEncounter[x]+10) !== (lastEncounter[x+1])) {        //check if in-line vertical
+            //alert("correct boat vertical"); 
+            incorrect = 1;
+        } 
+    }
+    if (incorrect === 0) {
+        alert("good placement, move on");
+    } else {
+        alert("incorrect placement, start again");
+        placeBoat();
     }
     
     /*if ( document.getElementById(lastEncounter-10).className === "cell boat"
