@@ -4,29 +4,38 @@ document.addEventListener("DOMContentLoaded", function() {
 })
 
 function runGame() {
-    //createMap();
     playGame();
 }
 
 /**
  * Creates contents of game-area
  */
-function createMap(player) {
-    document.getElementById("game-container").innerHTML = ``;
+function createMap() {
+    document.getElementById("game-container").innerHTML="";
     for (let x = 0 ; x < 100 ; x++) {
         let cell = document.createElement("div");
         cell.className = "cell";
         cell.id = x;
         document.getElementById("game-container").appendChild(cell);
     }
+    /**/
+}
+
+function fogMap(player) {
     if (player === 1) {
         for (let x = 50 ; x <=99 ; x++) {
             document.getElementById(x).classList.add ("fog");   // fogs player 2's half of map
+        }
+        for (let x = 0 ; x <=49 ; x++) {
+            document.getElementById(x).classList.remove ("fog");   // remove fog player 1's half of map
         }
     } else if (player === 2) {
         for (let x = 0 ; x <=49 ; x++) {
             document.getElementById(x).classList.add ("fog");   // fogs player 1's half of map
         } 
+        for (let x = 50 ; x <=99 ; x++) {
+            document.getElementById(x).classList.remove ("fog");   // remove fog player 2's half of map
+        }
     }
 }
 
@@ -36,26 +45,30 @@ function createMap(player) {
 function playGame() {
     document.getElementById("game-container").innerHTML = 
         `<button id="play">Play</button>`;
-    document.getElementById("play").addEventListener("click", buildPhase);
+    document.getElementById("play").addEventListener("click", function (){
+        createMap();
+        buildPhase();
+    });
 }
 
 /**
  * Select player to place boats or ready to go to next phase
  */
-function buildPhase() {
+function buildPhase(map) {
+    let finalMap = []
+    finalMap = finalMap + map;
     document.getElementById("menu").innerHTML = 
-        `<button id="ready">Ready</button>`;
-    document.getElementById("game-container").innerHTML = 
         `<button id="player1">Player 1</button>
-        <button id="player2">Player 2</button>`;
+        <button id="player2">Player 2</button>
+        <button id="ready">Ready</button>`;
     let buttons = document.getElementsByTagName("button");
     for (let button of buttons) {
         button.addEventListener("click", function() {
             if (this.id === "player1") {
-                createMap(1);
-                ready1 = placeBoat(1, 1);
+                fogMap(1);
+                placeBoat(1, 1);
             } else if (this.id === "player2") {
-                createMap(2);
+                fogMap(2);
                 placeBoat(2, 1);
             } else if (this.id === "ready") {
                 battlePhase();
@@ -65,8 +78,16 @@ function buildPhase() {
 }
 
 function placeBoat(player, boat) {
+    let map = [];
+    let i=0;
     if (boat === 3) {
-        buildPhase();
+        for (let x=0;x<100;x++) {
+            if (document.getElementById(x).className === "cell boat confirmed") {
+                map[i]=x;
+                i++;
+            }
+        }
+        buildPhase(map);
     } else {
 //create contents of page    
     document.getElementById("menu").innerHTML = `<h2>Player ${player}, place boat ${boat}</h2><button id="ok">OK</button>`;    

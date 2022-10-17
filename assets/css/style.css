@@ -36,10 +36,6 @@ button {
     background-color: #373737;
 }
 
-.fog {
-    background-color: darkblue;
-}
-
 .highlight-cell {
     box-shadow: 5px 5px 5px #00aaff;
 }
@@ -50,4 +46,8 @@ button {
 
 .confirmed {
     background-color: black;
+}
+
+.fog {
+    background-color: darkblue;
 }
