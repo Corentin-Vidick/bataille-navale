@@ -20,12 +20,10 @@ function createMap(player) {
         document.getElementById("game-container").appendChild(cell);
     }
     if (player === 1) {
-        createMap();
         for (let x = 50 ; x <=99 ; x++) {
             document.getElementById(x).classList.add ("fog");   // fogs player 2's half of map
         }
     } else if (player === 2) {
-        createMap();
         for (let x = 0 ; x <=49 ; x++) {
             document.getElementById(x).classList.add ("fog");   // fogs player 1's half of map
         } 
@@ -45,8 +43,6 @@ function playGame() {
  * Select player to place boats or ready to go to next phase
  */
 function buildPhase() {
-    let ready1 = false;
-    let ready2 = false;
     document.getElementById("menu").innerHTML = 
         `<button id="ready">Ready</button>`;
     document.getElementById("game-container").innerHTML = 
@@ -57,18 +53,12 @@ function buildPhase() {
         button.addEventListener("click", function() {
             if (this.id === "player1") {
                 createMap(1);
-                placeBoat(1, 1);
+                ready1 = placeBoat(1, 1);
             } else if (this.id === "player2") {
-                createMap(1);
+                createMap(2);
                 placeBoat(2, 1);
-                ready2 = true;
             } else if (this.id === "ready") {
-                if (ready1 && ready2) {
-                    battlePhase();
-                } else {
-                    alert("please place all boats");
-                }
-
+                battlePhase();
             }
         })
     }
@@ -95,7 +85,7 @@ function placeBoat(player, boat) {
         }
         let correct = 0;
         document.getElementById("ok").addEventListener("click", function () {
-                correct = parseInt(checkPlacement());
+                correct = parseInt(checkPlacement(player));
 
         if (correct === 1) {
             boat ++;
@@ -105,66 +95,127 @@ function placeBoat(player, boat) {
     }
 } 
 
-function checkPlacement() {
-    alert("Boat placed");
-    let correct = 0;
-    let boatCounter = 0;
-    let x = 0;
-    rowLoop:
-        while (x < 50) {
-            let boatInRow = 0;
-            let y = 0;
-            while (y < 10){
-                if (document.getElementById(x+y).className === "cell boat") {
-                    boatInRow ++;
-                }
-                y ++;
-            }
-            if (boatInRow === 4) {
-                correct = 1;
-                break rowLoop;
-            }
-            x += 10;
-        }
-    let y = 0;
-    rowColumn:
-        while (y < 10) {
-            let boatInColumn = 0;
-            let x = 0;
+function checkPlacement(player) {
+    if (player === 1) {
+        alert("Boat placed");
+        let correct = 0;
+        let boatCounter = 0;
+        let x = 0;
+        rowLoop:
             while (x < 50) {
-                if (document.getElementById(x+y).className === "cell boat") {
-                    boatInColumn ++;
+                let boatInRow = 0;
+                let y = 0;
+                while (y < 10){
+                    if (document.getElementById(x+y).className === "cell boat") {
+                        boatInRow ++;
+                    }
+                    y ++;
+                }
+                if (boatInRow === 4) {
+                    correct = 1;
+                    break rowLoop;
                 }
                 x += 10;
             }
-            if (boatInColumn === 4) {
-                correct = 1;
-                break rowColumn;
+        let y = 0;
+        rowColumn:
+            while (y < 10) {
+                let boatInColumn = 0;
+                let x = 0;
+                while (x < 50) {
+                    if (document.getElementById(x+y).className === "cell boat") {
+                        boatInColumn ++;
+                    }
+                    x += 10;
+                }
+                if (boatInColumn === 4) {
+                    correct = 1;
+                    break rowColumn;
+                }
+                y ++;
             }
-            y ++;
+        for (let x = 0; x < 50 ; x++){
+            if (document.getElementById(x).className === "cell boat") {
+                boatCounter ++;
+            }
         }
-    for (let x = 0; x < 50 ; x++){
-        if (document.getElementById(x).className === "cell boat") {
-            boatCounter ++;
+        if (boatCounter != 4) {correct = 0}
+        if (correct === 1) {
+            alert("Well done, moving on");
+        } else {
+            alert("wrong placement, please try again");
         }
+        return [correct];
+    } else if (player === 2) {
+        alert("Boat placed");
+        let correct = 0;
+        let boatCounter = 0;
+        let x = 50;
+        rowLoop:
+            while (x < 100) {
+                let boatInRow = 0;
+                let y = 0;
+                while (y < 10){
+                    if (document.getElementById(x+y).className === "cell boat") {
+                        boatInRow ++;
+                    }
+                    y ++;
+                }
+                if (boatInRow === 4) {
+                    correct = 1;
+                    break rowLoop;
+                }
+                x += 10;
+            }
+        let y = 0;
+        rowColumn:
+            while (y < 10) {
+                let boatInColumn = 0;
+                let x = 50;
+                while (x < 100) {
+                    if (document.getElementById(x+y).className === "cell boat") {
+                        boatInColumn ++;
+                    }
+                    x += 10;
+                }
+                if (boatInColumn === 4) {
+                    correct = 1;
+                    break rowColumn;
+                }
+                y ++;
+            }
+        for (let x = 50; x < 100 ; x++){
+            if (document.getElementById(x).className === "cell boat") {
+                boatCounter ++;
+            }
+        }
+        if (boatCounter != 4) {correct = 0}
+        if (correct === 1) {
+            alert("Well done, moving on");
+        } else {
+            alert("wrong placement, please try again");
+        }
+        return [correct];
     }
-    if (boatCounter != 4) {correct = 0}
-    if (correct === 1) {
-        alert("Well done, moving on");
-    } else {
-        alert("wrong placement, please try again");
-    }
-    return [correct];
 }
 
 function confirmBoat(player, boat) {
-    for (let x = 0; x < 50 ; x++){
+    for (let x = 0; x < 100 ; x++){
         if (document.getElementById(x).className === "cell boat") {
             document.getElementById(x).classList.add("confirmed");
         }
     }
     alert("Boat confirmed");
     placeBoat(player, boat);
+}
+
+function battlePhase() {
+    if (player1Ready && player2Ready) {
+        alert("let's fight");
+    } else {
+        alert("place boats for all players");
+        buildPhase();
+    }
 }
 
 // Effects
