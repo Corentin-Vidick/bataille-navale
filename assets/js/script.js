@@ -54,9 +54,7 @@ function playGame() {
 /**
  * Select player to place boats or ready to go to next phase
  */
-function buildPhase(map) {
-    let finalMap = []
-    finalMap = finalMap + map;
+function buildPhase(ap) {
     document.getElementById("menu").innerHTML = 
         `<button id="player1">Player 1</button>
         <button id="player2">Player 2</button>
@@ -78,16 +76,8 @@ function buildPhase(map) {
 }
 
 function placeBoat(player, boat) {
-    let map = [];
-    let i=0;
     if (boat === 3) {
-        for (let x=0;x<100;x++) {
-            if (document.getElementById(x).className === "cell boat confirmed") {
-                map[i]=x;
-                i++;
-            }
-        }
-        buildPhase(map);
+        buildPhase();
     } else {
 //create contents of page    
     document.getElementById("menu").innerHTML = `<h2>Player ${player}, place boat ${boat}</h2><button id="ok">OK</button>`;    
