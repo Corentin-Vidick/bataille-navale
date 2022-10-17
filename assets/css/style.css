@@ -33,7 +33,7 @@ button {
 }
 
 .boat {
-    background-color: black;
+    background-color: #373737;
 }
 
 .fog {
@@ -46,4 +46,8 @@ button {
 
 .highlight-fog {
     background-color: #000045;
+}
+
+.confirmed {
+    background-color: black;
 }
