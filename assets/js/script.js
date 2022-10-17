@@ -1,3 +1,9 @@
+/* jshint esversion: 11 */    //starts EVERY javascript file for checker
+
+let player1Ready = false;
+let player2Ready = false;
+
+
 // Wait for the DOM to finish loading before running the game
 document.addEventListener("DOMContentLoaded", function() {
     runGame();
@@ -18,23 +24,22 @@ function createMap() {
         cell.id = x;
         document.getElementById("game-container").appendChild(cell);
     }
-    /**/
 }
 
 function fogMap(player) {
-    if (player === 1) {
+    if (player === 1 && !player1Ready) {
         for (let x = 50 ; x <=99 ; x++) {
-            document.getElementById(x).classList.add ("fog");   // fogs player 2's half of map
+            document.getElementById(x).classList.add("fog");   // fogs player 2's half of map
         }
         for (let x = 0 ; x <=49 ; x++) {
-            document.getElementById(x).classList.remove ("fog");   // remove fog player 1's half of map
+            document.getElementById(x).classList.remove("fog");   // remove fog player 1's half of map
         }
-    } else if (player === 2) {
+    } else if (player === 2 && !player2Ready) {
         for (let x = 0 ; x <=49 ; x++) {
-            document.getElementById(x).classList.add ("fog");   // fogs player 1's half of map
+            document.getElementById(x).classList.add("fog");   // fogs player 1's half of map
         } 
         for (let x = 50 ; x <=99 ; x++) {
-            document.getElementById(x).classList.remove ("fog");   // remove fog player 2's half of map
+            document.getElementById(x).classList.remove("fog");   // remove fog player 2's half of map
         }
     }
 }
@@ -54,7 +59,7 @@ function playGame() {
 /**
  * Select player to place boats or ready to go to next phase
  */
-function buildPhase(ap) {
+function buildPhase() {
     document.getElementById("menu").innerHTML = 
         `<button id="player1">Player 1</button>
         <button id="player2">Player 2</button>
@@ -64,10 +69,15 @@ function buildPhase(ap) {
         button.addEventListener("click", function() {
             if (this.id === "player1") {
                 fogMap(1);
-                placeBoat(1, 1);
+                if (!player1Ready) {  
+                    alert(player1Ready)                
+                    placeBoat(1, 1);
+                }
             } else if (this.id === "player2") {
                 fogMap(2);
-                placeBoat(2, 1);
+                if (!player2Ready) {
+                    placeBoat(2, 1);
+                }
             } else if (this.id === "ready") {
                 battlePhase();
             }
@@ -77,34 +87,39 @@ function buildPhase(ap) {
 
 function placeBoat(player, boat) {
     if (boat === 3) {
+        if (player === 1){
+            player1Ready = true;
+        } else if (player === 2) {
+            player2Ready = true;
+        }
         buildPhase();
     } else {
-//create contents of page    
-    document.getElementById("menu").innerHTML = `<h2>Player ${player}, place boat ${boat}</h2><button id="ok">OK</button>`;    
-//boat placement
+        //create contents of page    
+        document.getElementById("menu").innerHTML = `<h2>Player ${player}, place boat ${boat}</h2><button id="ok">OK</button>`;
+        //boat placement
         let cells = document.getElementsByClassName("cell");
         for (let cell of cells) {
             cell.addEventListener("mouseover", higlightPlacement);
             cell.addEventListener("mouseout", normal);
-            cell.addEventListener("click", function(){
-                if (this.className === "cell boat"){
-                    this.classList.remove ("boat");
-                } else if (this.className === "cell highlight-cell"){
-                    this.classList.add ("boat");
+            cell.addEventListener("click", function () {
+                if (this.className === "cell boat") {
+                    this.classList.remove("boat");
+                } else if (this.className === "cell highlight-cell") {
+                    this.classList.add("boat");
                 }
-            })            
+            });
         }
         let correct = 0;
         document.getElementById("ok").addEventListener("click", function () {
-                correct = parseInt(checkPlacement(player));
+            correct = parseInt(checkPlacement(player));
 
-        if (correct === 1) {
-            boat ++;
-            confirmBoat(player,boat);
-        }
-    });
+            if (correct === 1) {
+                boat++;
+                confirmBoat(player, boat);
+            }
+        });
     }
-} 
+}
 
 function checkPlacement(player) {
     if (player === 1) {
@@ -222,6 +237,10 @@ function confirmBoat(player, boat) {
 
 function battlePhase() {
     if (player1Ready && player2Ready) {
+        let cells = document.querySelectorAll(".cell");
+        cells.forEach(cell => {
+            cell.classList.add("fog");
+        });
         alert("let's fight");
     } else {
         alert("place boats for all players");
