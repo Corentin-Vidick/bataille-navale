@@ -286,14 +286,14 @@ function battlePhase(player) {
         document.getElementById("menu").innerHTML = `<button id="player${player}">Player ${player} ready?</button>`;
         let buttons = document.getElementById("player"+player);
             buttons.addEventListener("click", function(){
-                if (this.id === "player"+player) {
-                    playerShoot(player)
-                }
                 buttons.removeEventListener("click", function(){
                     if (this.id === "player"+player) {
                         playerShoot(player)
                     }
                 });
+                if (this.id === "player"+player) {
+                    playerShoot(player)
+                }
             });
     }
 }
@@ -310,6 +310,14 @@ function playerShoot(player) {
             cell.addEventListener("mouseover", higlightPlacement);
             cell.addEventListener("mouseout", normal);
             cell.addEventListener("click", function () {
+                cell.removeEventListener("click", function () {
+                    if (this.classList.contains("target")) {
+                        this.classList.remove("target");
+                    } else if (this.classList.contains("highlight-fog")) {
+                        this.classList.remove("fog");
+                        this.classList.add("target");
+                    }
+                });
                 if (this.classList.contains("target")) {
                     this.classList.remove("target");
                 } else if (this.classList.contains("highlight-fog")) {
@@ -317,6 +325,7 @@ function playerShoot(player) {
                     this.classList.add("target");
                 }
             });
+        }
             let hit = 0;
             document.getElementById("shoot").addEventListener("click", function () {   
                 document.getElementById("shoot").removeEventListener("click", function () {   
@@ -336,7 +345,6 @@ function playerShoot(player) {
                 }
                 confirmShot(player);
             });
-        }
 }
 
 function checkHit() {
