@@ -40,18 +40,31 @@ button {
     background-color: #373737;
 }
 
-.highlight-cell {
-    box-shadow: 5px 5px 5px #00aaff;
-}
-
-.highlight-fog {
-    background-color: #000045;
-}
-
 .confirmed {
     background-color: black;
 }
 
 .fog {
     background-color: darkblue;
+}
+
+.target {
+    background-color: red;
+}
+
+.boat-hit {
+    background-color: red;
+    border-color: black;
+}
+
+.miss {
+    background-color: whitesmoke;
+}
+
+.highlight-cell {
+    box-shadow: 5px 5px 5px #00aaff;
+}
+
+.highlight-fog {
+    background-color: orange;
 }
