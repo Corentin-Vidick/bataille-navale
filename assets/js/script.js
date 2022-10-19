@@ -1,13 +1,16 @@
-/* jshint esversion: 11 */    //starts EVERY javascript file for checker
+/* jshint esversion: 11 */ //starts EVERY javascript file for checker
 
 let player1Ready = false;
 let player2Ready = false;
 let player1Life = 8;
 let player2Life = 8;
 
+counterplaceBoat = 0;
+counterbuildPhase = 0;
+
 
 // Wait for the DOM to finish loading before running the game
-document.addEventListener("DOMContentLoaded", function() {
+document.addEventListener("DOMContentLoaded", function () {
     playGame();
 })
 
@@ -15,8 +18,8 @@ document.addEventListener("DOMContentLoaded", function() {
  * Creates contents of game-area
  */
 function createMap() {
-    document.getElementById("game-container").innerHTML="";
-    for (let x = 0 ; x < 100 ; x++) {
+    document.getElementById("game-container").innerHTML = "";
+    for (let x = 0; x < 100; x++) {
         let cell = document.createElement("div");
         cell.className = "cell";
         cell.id = x;
@@ -32,23 +35,23 @@ function createMap() {
  */
 function fogMap(player) {
     if (player === 1) {
-        for (let x = 50 ; x <=99 ; x++) {
-            document.getElementById(x).classList.add("fog");   // fogs player 2's half of map
+        for (let x = 50; x <= 99; x++) {
+            document.getElementById(x).classList.add("fog"); // fogs player 2's half of map
         }
-        for (let x = 0 ; x <=49 ; x++) {
-            document.getElementById(x).classList.remove("fog");   // remove fog player 1's half of map
+        for (let x = 0; x <= 49; x++) {
+            document.getElementById(x).classList.remove("fog"); // remove fog player 1's half of map
         }
     } else if (player === 2) {
-        for (let x = 0 ; x <=49 ; x++) {
-            document.getElementById(x).classList.add("fog");   // fogs player 1's half of map
-        } 
-        for (let x = 50 ; x <=99 ; x++) {
-            document.getElementById(x).classList.remove("fog");   // remove fog player 2's half of map
+        for (let x = 0; x <= 49; x++) {
+            document.getElementById(x).classList.add("fog"); // fogs player 1's half of map
+        }
+        for (let x = 50; x <= 99; x++) {
+            document.getElementById(x).classList.remove("fog"); // remove fog player 2's half of map
         }
     } else if (player === 0) {
-        let cells = document.querySelectorAll(".cell");         //Tim's code - use of =>
-        cells.forEach(cell => {                                 //Tim's code - use of =>
-            cell.classList.add("fog");          
+        let cells = document.querySelectorAll(".cell"); //Tim's code - use of =>
+        cells.forEach(cell => { //Tim's code - use of =>
+            cell.classList.add("fog");
         });
     }
 }
@@ -57,59 +60,74 @@ function fogMap(player) {
  * Menu page
  */
 function playGame() {
-    document.getElementById("game-container").innerHTML = 
+    document.getElementById("game-container").innerHTML =
         `<button id="play">Play</button>`;
-    document.getElementById("play").addEventListener("click", function (){
-        document.getElementById("play").removeEventListener("click", function (){
+    document.getElementById("play").addEventListener("click", function () {
+        document.getElementById("play").removeEventListener("click", function () {
             createMap();
             fogMap(0);
             buildPhase();
-        });  
+        });
         createMap();
         fogMap(0);
         buildPhase();
     });
 }
 
+function buildPhaseEventListener() {
+    let cells = document.getElementsByClassName("cell");
+    for (let cell of cells) {
+        cell.addEventListener("mouseover", higlightPlacement);
+        cell.addEventListener("mouseout", normal);
+        cell.addEventListener("click", clickPlaceBoat);
+    }
+}
+
+function removeBuildPhaseEventListener() {
+    let cells = document.getElementsByClassName("cell");
+    for (let cell of cells) {
+        cell.removeEventListener("mouseover", higlightPlacement);
+        cell.removeEventListener("mouseout", normal);
+        cell.removeEventListener("click", clickPlaceBoat);
+    }
+}
+
+function clickPlaceBoat() {
+    if (this.className === "cell boat") {
+        this.classList.remove("boat");
+    } else if (this.className === "cell highlight-cell") {
+        this.classList.add("boat");
+    }
+}
+
+
 /**
  * Select player to place boats or ready to go to next phase
  */
 function buildPhase() {
+    counterbuildPhase++;
     fogMap(0);
-    document.getElementById("menu").innerHTML = 
+    document.getElementById("menu").innerHTML =
         `<button id="player1">Player 1</button>
         <button id="player2">Player 2</button>
         <button id="ready">Ready</button>`;
     let buttons = document.getElementsByTagName("button");
     for (let button of buttons) {
-        button.addEventListener("click", function() {
-            button.removeEventListener("click", function () {
-                if (this.id === "player1") {
-                    fogMap(1);
-                    if (!player1Ready) {                 
-                        placeBoat(1, 1);
-                    }
-                } else if (this.id === "player2") {
-                    fogMap(2);
-                    if (!player2Ready) {
-                        placeBoat(2, 1);
-                    }
-                } else if (this.id === "ready") {
-                    fogMap(0);
-                    battlePhase(1);
-                }  
-            });
+        button.addEventListener("click", function () {
             if (this.id === "player1") {
-                fogMap(1);
-                if (!player1Ready) {                 
+                if (!player1Ready) {
+                    fogMap(1);
+                    buildPhaseEventListener();
                     placeBoat(1, 1);
                 }
             } else if (this.id === "player2") {
-                fogMap(2);
                 if (!player2Ready) {
+                    fogMap(2);
+                    buildPhaseEventListener();
                     placeBoat(2, 1);
                 }
             } else if (this.id === "ready") {
+                removeBuildPhaseEventListener();
                 fogMap(0);
                 battlePhase(1);
             }
@@ -124,8 +142,9 @@ function buildPhase() {
 }
 
 function placeBoat(player, boat) {
+    counterplaceBoat++;
     if (boat === 3) {
-        if (player === 1){
+        if (player === 1) {
             player1Ready = true;
         } else if (player === 2) {
             player2Ready = true;
@@ -135,26 +154,15 @@ function placeBoat(player, boat) {
         //create contents of page    
         document.getElementById("menu").innerHTML = `<h2>Player ${player}, place boat ${boat}</h2><button id="ok">OK</button>`;
         //boat placement
-        let cells = document.getElementsByClassName("cell");
-        for (let cell of cells) {
-            cell.addEventListener("mouseover", higlightPlacement);
-            cell.addEventListener("mouseout", normal);
-            cell.addEventListener("click", function () {
-                if (this.className === "cell boat") {
-                    this.classList.remove("boat");
-                } else if (this.className === "cell highlight-cell") {
-                    this.classList.add("boat");
-                }
-            });
-        }
+        //    buildPhaseEventListener();
         let correct = 0;
         document.getElementById("ok").addEventListener("click", function () {
-            document.getElementById("ok").removeEventListener("click", function (){
+            document.getElementById("ok").removeEventListener("click", function () {
                 correct = parseInt(checkPlacement(player));
                 if (correct === 1) {
                     boat++;
                     confirmBoat(player, boat);
-                } 
+                }
             });
             correct = parseInt(checkPlacement(player));
             if (correct === 1) {
@@ -175,11 +183,11 @@ function checkPlacement(player) {
             while (x < 50) {
                 let boatInRow = 0;
                 let y = 0;
-                while (y < 10){
-                    if (document.getElementById(x+y).className === "cell boat") {
-                        boatInRow ++;
+                while (y < 10) {
+                    if (document.getElementById(x + y).className === "cell boat") {
+                        boatInRow++;
                     }
-                    y ++;
+                    y++;
                 }
                 if (boatInRow === 4) {
                     correct = 1;
@@ -193,8 +201,8 @@ function checkPlacement(player) {
                 let boatInColumn = 0;
                 let x = 0;
                 while (x < 50) {
-                    if (document.getElementById(x+y).className === "cell boat") {
-                        boatInColumn ++;
+                    if (document.getElementById(x + y).className === "cell boat") {
+                        boatInColumn++;
                     }
                     x += 10;
                 }
@@ -202,14 +210,16 @@ function checkPlacement(player) {
                     correct = 1;
                     break rowColumn;
                 }
-                y ++;
+                y++;
             }
-        for (let x = 0; x < 50 ; x++){
+        for (let x = 0; x < 50; x++) {
             if (document.getElementById(x).className === "cell boat") {
-                boatCounter ++;
+                boatCounter++;
             }
         }
-        if (boatCounter != 4) {correct = 0}
+        if (boatCounter != 4) {
+            correct = 0
+        }
         if (correct === 0) {
             alert("wrong placement, please try again");
         }
@@ -223,11 +233,11 @@ function checkPlacement(player) {
             while (x < 100) {
                 let boatInRow = 0;
                 let y = 0;
-                while (y < 10){
-                    if (document.getElementById(x+y).className === "cell boat") {
-                        boatInRow ++;
+                while (y < 10) {
+                    if (document.getElementById(x + y).className === "cell boat") {
+                        boatInRow++;
                     }
-                    y ++;
+                    y++;
                 }
                 if (boatInRow === 4) {
                     correct = 1;
@@ -241,8 +251,8 @@ function checkPlacement(player) {
                 let boatInColumn = 0;
                 let x = 50;
                 while (x < 100) {
-                    if (document.getElementById(x+y).className === "cell boat") {
-                        boatInColumn ++;
+                    if (document.getElementById(x + y).className === "cell boat") {
+                        boatInColumn++;
                     }
                     x += 10;
                 }
@@ -250,14 +260,16 @@ function checkPlacement(player) {
                     correct = 1;
                     break rowColumn;
                 }
-                y ++;
+                y++;
             }
-        for (let x = 50; x < 100 ; x++){
+        for (let x = 50; x < 100; x++) {
             if (document.getElementById(x).className === "cell boat") {
-                boatCounter ++;
+                boatCounter++;
             }
         }
-        if (boatCounter != 4) {correct = 0}
+        if (boatCounter != 4) {
+            correct = 0
+        }
         if (correct === 0) {
             alert("wrong placement, please try again");
         }
@@ -266,7 +278,7 @@ function checkPlacement(player) {
 }
 
 function confirmBoat(player, boat) {
-    for (let x = 0; x < 100 ; x++){
+    for (let x = 0; x < 100; x++) {
         if (document.getElementById(x).className === "cell boat") {
             document.getElementById(x).classList.add("confirmed");
         }
@@ -275,26 +287,57 @@ function confirmBoat(player, boat) {
     placeBoat(player, boat);
 }
 
+function battlePhaseEventListener() {
+    let cells = document.getElementsByClassName("cell");
+    alert("listening for click on cell shootmode");
+    for (let cell of cells) {
+        cell.addEventListener("mouseover", higlightPlacement);
+        cell.addEventListener("mouseout", normal);
+        cell.addEventListener("click", clickPlaceShot);
+    }
+}
+
+function removeBattlePhaseEventListener() {
+    let cells = document.getElementsByClassName("cell");
+    alert("remove listen for click on cell shootmode");
+    for (let cell of cells) {
+        cell.removeEventListener("mouseover", higlightPlacement);
+        cell.removeEventListener("mouseout", normal);
+        cell.removeEventListener("click", clickPlaceShot);
+    }
+}
+
+function clickPlaceShot() {
+    if (this.classList.contains("target")) {
+        this.classList.remove("target");
+    } else if (this.classList.contains("highlight-fog")) {
+        this.classList.remove("fog");
+        this.classList.add("target");
+    }
+}
+
 function battlePhase(player) {
-    if (!player1Ready || !player2Ready) {   
+    if (!player1Ready || !player2Ready) {
         alert("place boats for all players");
         buildPhase();
     } else if (player1Life === 0 || player2Life === 0) {
         gameOver();
     } else {
         fogMap(0);
+        removeBattlePhaseEventListener();
         document.getElementById("menu").innerHTML = `<button id="player${player}">Player ${player} ready?</button>`;
-        let buttons = document.getElementById("player"+player);
-            buttons.addEventListener("click", function(){
-                buttons.removeEventListener("click", function(){
-                    if (this.id === "player"+player) {
-                        playerShoot(player)
-                    }
-                });
-                if (this.id === "player"+player) {
+        let buttons = document.getElementById("player" + player);
+        buttons.addEventListener("click", function () {
+            buttons.removeEventListener("click", function () {
+                if (this.id === "player" + player) {
                     playerShoot(player)
                 }
             });
+            if (this.id === "player" + player) {
+
+                playerShoot(player)
+            }
+        });
     }
 }
 
@@ -305,52 +348,35 @@ function battlePhase(player) {
 function playerShoot(player) {
     document.getElementById("menu").innerHTML = `<h2>Player ${player}, ready to shoot?</h2><button id="shoot">Shoot</button>`;
     fogMap(player);
-    let cells = document.getElementsByClassName("cell");
-        for (let cell of cells) {
-            cell.addEventListener("mouseover", higlightPlacement);
-            cell.addEventListener("mouseout", normal);
-            cell.addEventListener("click", function () {
-                cell.removeEventListener("click", function () {
-                    if (this.classList.contains("target")) {
-                        this.classList.remove("target");
-                    } else if (this.classList.contains("highlight-fog")) {
-                        this.classList.remove("fog");
-                        this.classList.add("target");
-                    }
-                });
-                if (this.classList.contains("target")) {
-                    this.classList.remove("target");
-                } else if (this.classList.contains("highlight-fog")) {
-                    this.classList.remove("fog");
-                    this.classList.add("target");
-                }
-            });
+    battlePhaseEventListener();
+    let hit = 0;
+    document.getElementById("shoot").addEventListener("click", function () {
+        /*document.getElementById("shoot").removeEventListener("click", function () {
+            hit = parseInt(checkHit());
+            if (hit === 1 && player === 1) {
+                player1Life--;
+            } else if (hit === 1 && player === 2) {
+                player2Life--;
+            }
+            confirmShot(player);
+        });*/
+        hit = parseInt(checkHit());
+        if (hit === 1 && player === 1) {
+            player1Life--;
+        } else if (hit === 1 && player === 2) {
+            player2Life--;
         }
-            let hit = 0;
-            document.getElementById("shoot").addEventListener("click", function () {   
-                document.getElementById("shoot").removeEventListener("click", function () {   
-                    hit = parseInt(checkHit());
-                    if (hit === 1 && player === 1) {
-                        player1Life--;
-                    } else if (hit === 1 && player === 2) {
-                        player2Life--;
-                    }
-                    confirmShot(player);
-                });
-                hit = parseInt(checkHit());
-                if (hit === 1 && player === 1) {
-                    player1Life--;
-                } else if (hit === 1 && player === 2) {
-                    player2Life--;
-                }
-                confirmShot(player);
-            });
+        confirmShot(player);
+    });
 }
 
+/**
+ * Returns 1 if boat hit for playerLife count
+ */
 function checkHit() {
     alert("Checking if shot hit...");
     let hit = 0;
-    for (let x = 0 ; x < 100 ; x++) {
+    for (let x = 0; x < 100; x++) {
         if (document.getElementById(x).classList.contains("target") && document.getElementById(x).classList.contains("boat")) {
             hit = 1;
         }
@@ -358,8 +384,11 @@ function checkHit() {
     return hit;
 }
 
+/**
+ * Assigns correct class to cell dependent on result, switches player, goes back to battlePhase 
+ */
 function confirmShot(player) {
-    for (let x = 0 ; x < 100 ; x++) {
+    for (let x = 0; x < 100; x++) {
         if (document.getElementById(x).classList.contains("target") && document.getElementById(x).classList.contains("boat")) {
             document.getElementById(x).className = "cell boat-hit";
             alert("boat hit");
@@ -376,8 +405,8 @@ function confirmShot(player) {
     battlePhase(player);
 }
 
-function checkScore() {
-    alert("checkscore");
+function gameOver() {
+    alert("Game Over");
 }
 
 // Effects
@@ -387,7 +416,7 @@ function higlightPlacement() {
     } else if (this.classList.contains("fog")) {
         this.classList.remove("fog");
         this.classList.add("highlight-fog");
-    }                
+    }
 }
 
 function normal() {
