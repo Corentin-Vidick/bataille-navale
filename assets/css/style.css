@@ -3,17 +3,29 @@
     padding: 0;
     border: none;
     box-sizing: border-box;
+    background-color: rgb(208, 208, 208);
+}
+
+h1 {
+    text-align: center;
+    font-size: 3rem;
+}
+
+h2 {
+    background-color: darkgrey;
+    padding-top: 1rem;
 }
 
 #menu {
     width: 100%;
-    background-color: lightcoral;
-    height: 75px;
+    background-color: darkgrey;
+    display: flex;
+    justify-content: center;
 }
 
 button {
-    height: 50px;
-    width: 50px;
+    padding: 10px;
+    margin: 10px;
     background-color: red;
     font-size: 20px;
 }
@@ -23,17 +35,19 @@ button {
 }
 
 #game-container {
+    margin: auto;
     display: grid;
     background-color: lightblue;
     padding: 20px;
     gap: 5px;
-    grid-template-columns: repeat(10, 8vw);
+    width: 81vmin;
+    height: 81vmin;
+    grid-template-columns: repeat(10, minmax(20px, 1fr));
+    grid-template-rows: repeat(10, minmax(20px, 1fr));
 }
 
 .cell {
     background-color: blue;
-    width: 8vw;
-    height: 8vh;
 }
 
 .boat {
