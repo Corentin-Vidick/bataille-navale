@@ -112,3 +112,12 @@ img {
 .highlight-fog {
     background-color: orange;
 }
+
+/* Media queries */
+/* For medium screen sizes from 350px wide and down*/
+
+@media screen and (max-width: 350px) {
+    #game-container {
+        padding: 10px;
+    }
+}
