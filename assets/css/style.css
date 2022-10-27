@@ -68,6 +68,15 @@ button {
     grid-template-rows: repeat(10, minmax(20px, 1fr));
 }
 
+#middle-line {
+    height: 5px;
+    background-color: red;
+    width: 81vmin;
+    margin: auto;
+    position: relative;
+    bottom: 40.85vmin;
+}
+
 /* Grid cell states */
 img {
     max-width:100%;

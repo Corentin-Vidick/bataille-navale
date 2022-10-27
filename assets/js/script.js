@@ -106,6 +106,9 @@ document.addEventListener("DOMContentLoaded", function () {
         cell.id = x;
         document.getElementById("game-container").appendChild(cell);
     }
+    let line = document.createElement("div");
+    line.id = "middle-line";
+    document.getElementById("game-container").after(line)
 }
 
 /**
