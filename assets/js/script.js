@@ -92,12 +92,12 @@ function normal() {
 // Wait for the DOM to finish loading before running the game
 document.addEventListener("DOMContentLoaded", function () {
     playGame();
-})
+});
 
 /**
  * Creates contents of game-area
  */
- function createMap() {
+function createMap() {
     document.getElementById("rule-container").id = "game-container";
     document.getElementById("game-container").innerHTML = "";
     for (let x = 0; x < 100; x++) {
@@ -108,7 +108,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
     let line = document.createElement("div");
     line.id = "middle-line";
-    document.getElementById("game-container").after(line)
+    document.getElementById("game-container").after(line);
 }
 
 /**
@@ -150,7 +150,7 @@ function playGame() {
     player1Life = boatLength * 2;
     player2Life = boatLength * 2;
     // Create page contents
-    document.getElementById("menu").innerHTML =`<button id="play">Play</button>`;
+    document.getElementById("menu").innerHTML = `<button id="play">Play</button>`;
     document.getElementById("game-container").id = "rule-container";
     document.getElementById("rule-container").innerHTML = `
         <h2>Rules:</h2> 
@@ -158,7 +158,7 @@ function playGame() {
         <div>Each player places two boats</div>
         <div>Each boat is ${boatLength} tiles long</div>
         <div>The first player to destroy all adversaries' boats wins</div>
-        <div>May the best player win!</div>`        
+        <div>May the best player win!</div>`;
     // Listen for click
     document.getElementById("play").addEventListener("click", function () {
         createMap();
@@ -199,7 +199,7 @@ function buildPhase() {
                 fogMap(0);
                 battlePhase(1);
             }
-        })
+        });
     }
     // Change button color when boat placement complete
     if (player1Ready === true) {
@@ -232,7 +232,7 @@ function placeBoat(player, boat) {
             if (correct === 1) {
                 boat++;
                 confirmBoat(player, boat);
-            } else  if (correct === 0) {
+            } else if (correct === 0) {
                 alert("wrong placement, please try again");
                 placeBoat(player, boat);
             }
@@ -244,8 +244,8 @@ function placeBoat(player, boat) {
  * Checks if placement of boat is correct
  */
 function checkPlacement(player) {
-    let x;              // Variable depends on player, used to scan through grid
-    let maxX;           // Variable depends on player, used to scan through grid
+    let x; // Variable depends on player, used to scan through grid
+    let maxX; // Variable depends on player, used to scan through grid
     let correct = 0;
     // Check if boat is placed in row
     let boatSolid = 0;
@@ -313,7 +313,7 @@ function checkPlacement(player) {
         }
     // Check if correct number of cells selected
     let boatCounter = 0;
-    for (x = 0 ; x < 100 ; x++) {
+    for (x = 0; x < 100; x++) {
         if (document.getElementById(x).className === "cell boat") {
             boatCounter++;
         }
@@ -354,12 +354,12 @@ function battlePhase(player) {
         buttons.addEventListener("click", function () {
             buttons.removeEventListener("click", function () {
                 if (this.id === "player" + player) {
-                    playerShoot(player)
+                    playerShoot(player);
                 }
             });
             if (this.id === "player" + player) {
 
-                playerShoot(player)
+                playerShoot(player);
             }
         });
     }
@@ -377,19 +377,19 @@ function playerShoot(player) {
     document.getElementById("shoot").addEventListener("click", function () {
         hit = parseInt(checkHit());
         if (hit === 1 && player === 1) {
-            player1Life--;
+            player2Life--;
             confirmShot(player);
         } else if (hit === 1 && player === 2) {
-            player2Life--;
+            player1Life--;
             confirmShot(player);
         } else if (hit === 2) {
             alert("Too many shots fired!");
             playerShoot(player);
-        } else if (hit === 3)  {
+        } else if (hit === 3) {
             alert("You already shot this cell!");
             playerShoot(player);
         } else {
-        confirmShot(player);
+            confirmShot(player);
         }
     });
 }
@@ -409,11 +409,9 @@ function checkHit() {
         if (document.getElementById(x).classList.contains("target") && document.getElementById(x).classList.contains("boat")) {
             hit = 1;
         }
-        if (document.getElementById(x).classList.contains("target") 
-            && (document.getElementById(x).classList.contains("boat-hit") 
-            || document.getElementById(x).classList.contains("miss"))) {
-                hit = 3;
-            }
+        if (document.getElementById(x).classList.contains("target") && (document.getElementById(x).classList.contains("boat-hit") || document.getElementById(x).classList.contains("miss"))) {
+            hit = 3;
+        }
     }
     if (count != 1) {
         hit = 2;
